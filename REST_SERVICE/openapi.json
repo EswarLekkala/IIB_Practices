@@ -1,0 +1,59 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "REST_SERVICE",
+    "version": "1.0.0",
+    "description": "REST_SERVICE"
+  },
+  "servers": [
+    {
+      "url": "/rest_service/v1"
+    }
+  ],
+  "paths": {
+    "/AdharInsert": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        },
+        "parameters": []
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "header",
+          "schema": {}
+        }
+      ]
+    },
+    "/AdharUpdate": {
+      "put": {
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/AdharDelete": {
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    },
+    "/GetAdhardata": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "success"
+          }
+        }
+      }
+    }
+  }
+}

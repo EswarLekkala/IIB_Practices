@@ -1,0 +1,41 @@
+
+
+CREATE COMPUTE MODULE putAdharUpdate_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		
+		 CALL CopyEntireMessage();
+		RETURN TRUE;
+	END;
+
+	
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		DECLARE inref CHARACTER InputRoot.JSON.Data.ADHAR_DETAILS.ADHARNUMBER;
+			DECLARE inref1 REFERENCE TO InputRoot.JSON.Data.ADHAR_DETAILS;
+		
+		DECLARE query CHARACTER 'select * from ADHAR where ADHARNUMBER=?';
+		
+		SET Environment.resp = PASSTHRU(query TO Database.ORADSN VALUES(inref));
+		
+		
+		
+		IF (Environment.resp.ADHARNUMBER = inref) THEN
+			IF EXISTS(InputRoot.JSON.Data.ADHAR_DETAILS.ADHARNAME[]) THEN
+				update Database.ADHAR as a set ADHARNAME= inref1.ADHARNAME where a.ADHARNUMBER=inref;
+			    SET OutputRoot.JSON.Data.AdharResponse='Succesfully Updated Your Name';
+			ELSEIF EXISTS(InputRoot.JSON.Data.ADHAR_DETAILS.ADHARLOCATION[]) THEN
+				update Database.ADHAR as a set ADHARLOCATION= inref1.ADHARLOCATION where a.ADHARNUMBER=inref;
+			    SET OutputRoot.JSON.Data.AdharResponse='Succesfully Updated Your Location';
+			ELSEIF EXISTS(InputRoot.JSON.Data.ADHAR_DETAILS.UNIQUEID[]) THEN
+			   update Database.ADHAR as a set UNIQUEID= inref1.UNIQUEID where a.ADHARNUMBER=inref;
+			   SET OutputRoot.JSON.Data.AdharResponse='Succesfully Updated Your Unique Id';
+			END IF;
+		ELSE
+			SET OutputRoot.JSON.Data.ADHAR_DETAILS='Your Adhar Doesnt exist';
+			
+		END IF;
+		
+		
+	END;
+END MODULE;

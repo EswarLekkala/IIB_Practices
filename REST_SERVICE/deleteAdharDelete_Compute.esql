@@ -1,0 +1,30 @@
+
+
+
+
+CREATE COMPUTE MODULE deleteAdharDelete_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		CALL CopyEntireMessage();
+		RETURN TRUE;
+	END;	
+
+
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		DECLARE inref CHARACTER InputRoot.JSON.Data.ADHAR_DETAILS.ADHARNUMBER;
+		DECLARE query CHARACTER 'select * from ADHAR where ADHARNUMBER=?';
+		DECLARE Result1 CHARACTER;
+		SET Environment.Result1 = PASSTHRU(query TO Database.ORADSN VALUES(inref));
+		IF (Environment.Result1.ADHARNUMBER = inref) THEN
+			Delete FROM Database.ADHAR as a where a.ADHARNUMBER=inref;
+			SET OutputRoot.JSON.Data.AdharStatus ='Successfully Your AdharNumber Deleted';
+		ELSE
+			set OutputRoot.JSON.Data.AdharStatus='Adhar Doesnt Exist';
+
+		END IF;
+		
+		
+	END;
+END MODULE;

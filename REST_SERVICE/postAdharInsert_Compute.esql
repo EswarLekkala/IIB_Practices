@@ -1,0 +1,30 @@
+
+
+
+
+CREATE COMPUTE MODULE postAdharInsert_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		CALL CopyEntireMessage();
+		RETURN TRUE;
+	END;	
+
+
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		DECLARE inref REFERENCE TO InputRoot.JSON.Data.ADHAR_DETAILS;
+		DECLARE var CHARACTER inref.ADHARNUMBER;
+		DECLARE query CHARACTER 'select * from ADHAR where ADHARNUMBER=?';
+		DECLARE Result1 CHARACTER;
+		SET Environment.Result1 = PASSTHRU(query TO Database.ORADSN VALUES(var));
+		IF (Environment.Result1.ADHARNUMBER=var) THEN
+			set OutputRoot.JSON.Data.ErrorResponse ='Adhar Already Exist';
+		ELSE
+			INSERT INTO Database.ADHAR VALUES(inref.ADHARNUMBER,inref.ADHARNAME,inref.ADHARLOCATION,inref.UNIQUEID);
+			SET OutputRoot.JSON.Data.AdharResponse='Succesfully Inserted Your AdharDetails';
+		END IF;		
+
+
+	END;
+END MODULE;

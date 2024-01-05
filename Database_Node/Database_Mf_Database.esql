@@ -1,0 +1,18 @@
+
+
+CREATE DATABASE MODULE Database_Mf_Database
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+		DECLARE inref REFERENCE TO Root.XMLNSC.EmployeeDetails.Emp;
+		DECLARE i INTEGER 1;
+		WHILE LASTMOVE(inref) DO
+			INSERT INTO Database.EMP VALUES (inref.id,inref.name,inref.location,inref.technology);
+
+			move inref NEXTSIBLING;
+			SET i=i+1;
+		END WHILE;
+		--SET Root.XMLNSC.Respose = 'Successfuliy inserted';
+		RETURN TRUE;
+	END;
+
+END MODULE;

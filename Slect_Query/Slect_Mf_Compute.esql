@@ -1,0 +1,26 @@
+
+
+
+
+CREATE COMPUTE MODULE Slect_Mf_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		CALL CopyEntireMessage();
+
+		RETURN TRUE;
+	END;	
+
+
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		DECLARE ref,id CHARACTER  InputRoot.XMLNSC.Emp.id;
+		CALL pro123(id,Environment.data[]);
+		SET OutputRoot.XMLNSC.Response=Environment.data;
+	END;
+END MODULE;
+
+CREATE PROCEDURE pro123(IN id CHARACTER)
+LANGUAGE DATABASE
+DYNAMIC RESULT SETS 1
+EXTERNAL NAME "RETRIVE";

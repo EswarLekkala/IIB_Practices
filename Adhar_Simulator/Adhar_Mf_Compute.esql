@@ -1,0 +1,33 @@
+DECLARE ns NAMESPACE '';
+CREATE COMPUTE MODULE Adhar_Mf_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		CALL CopyEntireMessage();
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage() BEGIN
+		-- SET OutputRoot = InputRoot;
+
+		DECLARE inref REFERENCE TO InputRoot.JSON.Data.Details;
+		DECLARE i INTEGER 1;
+
+		DECLARE query CHARACTER 'select * from ADHAR';
+		SET Environment.Result1[]= PASSTHRU(query TO Database.ORADSN);
+		DECLARE ref1 REFERENCE TO Environment.Result1[>];
+
+		DECLARE outref REFERENCE TO OutputRoot.JSON.Data.resp;
+		WHILE LASTMOVE(ref1) DO
+			IF inref.name = ref1.ADHARNAME THEN
+				set outref.ADHARNUMBER = ref1.ADHARNUMBER;
+				set outref.ADHARNAME = ref1.ADHARNAME;
+				set outref.ADHARLOCATION = ref1.ADHARLOCATION;
+				set outref.UNIQUEID = ref1.UNIQUEID;
+			END IF;
+			set i= i+1;
+			MOVE ref1 NEXTSIBLING;
+		END WHILE;
+
+	END;
+END MODULE;

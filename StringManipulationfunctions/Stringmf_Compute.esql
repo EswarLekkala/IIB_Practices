@@ -1,0 +1,26 @@
+CREATE COMPUTE MODULE Stringmf_Compute
+	CREATE FUNCTION Main() RETURNS BOOLEAN
+	BEGIN
+
+		CALL CopyEntireMessage();
+		RETURN TRUE;
+	END;
+
+	CREATE PROCEDURE CopyEntireMessage()
+	BEGIN
+DECLARE inref REFERENCE TO InputRoot.XMLNSC.EmpDetails;
+DECLARE query CHARACTER 'select * from EMP';
+DECLARE i INTEGER 1;
+
+
+SET Environment.result = PASSTHRU(query TO Database.ORADSN);
+DECLARE outref REFERENCE TO OutputRoot.XMLNSC.Environment.result;
+WHILE LASTMOVE(outref) DO
+	set OutputRoot.XMLNSC.Employe = inref.id;
+	move outref NEXTSIBLING;
+END WHILE;
+
+
+
+	END;
+END MODULE;
